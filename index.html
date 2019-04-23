@@ -1,31 +1,207 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<!-- Load the Paper.js library -->
-<script type="text/javascript" src="assets/lib/paper-full.js"></script>
-<!-- Define inlined PaperScript associate it with myCanvas -->
-<script type="text/paperscript" canvas="myCanvas">
-	// Create a Paper.js Path to draw a line into it:
-	var path = new Path();
-	// Give the stroke a color
-	path.strokeColor = 'red';
-	var start = new Point(100, 100);
-	// Move to start and draw a line from there
-	path.moveTo(start);
-	// Note the plus operator on Point objects.
-	// PaperScript does that for us, and much more!
-	path.lineTo(start + [ 100, -50 ]);
+	<title>FatVarg</title>
 
-  var myCircle = new Path.Circle(new Point(100, 70), 10);
-  myCircle.fillColor = 'red';
+	<!-- Load the Paper.js library -->
+	<script type="text/javascript" src="assets/lib/paper-full.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.core.min.js"></script>
+	<!-- Define inlined PaperScript associate it with myCanvas -->
+	<script type="text/paperscript" canvas="myCanvas">
 
-  var myCircle2 = new Path.Circle(new Point(50, 50), 250);
-  myCircle.fillColor = 'blue';
+		var keyData = {
+	a: {
+	color:"purple",
+	sound: new Howl({
+	src: ['assets/sounds/bubbles.mp3' ]
+		})
+},
+b: {
+	color:"blue",
+	sound:new Howl({
+	      src: ['assets/sounds/clay.mp3' ]
+	    })
+		},
+			c: {
+				color:"#3e5d8e",
+				sound:new Howl({
+				src: ['assets/sounds/moon.mp3' ]
+				 })
+		},
+		d: {
+			color:"#3a4556",
+			sound:new Howl({
+			src: ['assets/sounds/confetti.mp3' ]
+			 })
+	},
+	e: {
+		color:"#be2bd8",
+		sound:new Howl({
+		src: ['assets/sounds/corona.mp3' ]
+		 })
+},
+f: {
+	color:"#681477",
+	sound:new Howl({
+	src: ['assets/sounds/dotted-spiral.mp3' ]
+	 })
+},
+g: {
+	color:"#ed99fc",
+	sound:new Howl({
+	src: ['assets/sounds/flash-1.mp3' ]
+	 })
+},
+h: {
+	color:"#6fd69f",
+	sound:new Howl({
+	src: ['assets/sounds/flash-2.mp3' ]
+	 })
+},
+i: {
+	color:"#226340",
+	sound:new Howl({
+	src: ['assets/sounds/flash-3.mp3' ]
+	 })
+},
+j: {
+	color:"#226340",
+	sound:new Howl({
+	src: ['assets/sounds/glimmer.mp3' ]
+	 })
+},
+k: {
+	color:"#18ad5d",
+	sound:new Howl({
+	src: ['assets/sounds/pinwheel.mp3' ]
+	 })
+},
+l: {
+	color:"#18ad5d",
+	sound:new Howl({
+	src: ['assets/sounds/piston-1.mp3' ]
+	 })
+},
+m: {
+	color:"#18ad5d",
+	sound:new Howl({
+	src: ['assets/sounds/piston-2.mp3' ]
+	 })
+},
+n: {
+	color:"#7293f9",
+	sound:new Howl({
+	src: ['assets/sounds/piston-3.mp3' ]
+	 })
+},
+o: {
+	color:"#0e46f9",
+	sound:new Howl({
+	src: ['assets/sounds/prism-1.mp3' ]
+	 })
+},
+p: {
+	color:"#efb22d",
+	sound:new Howl({
+	src: ['assets/sounds/prism-2.mp3' ]
+	 })
+},
+q: {
+	color:"#506fd3",
+	sound:new Howl({
+	src: ['assets/sounds/prism-3.mp3' ]
+	 })
+},
+r: {
+	color:"#892813",
+	sound:new Howl({
+	src: ['assets/sounds/splits.mp3' ]
+	 })
+},
+s: {
+	color:"#16e592",
+	sound:new Howl({
+	src: ['assets/sounds/squiggle.mp3' ]
+	 })
+},
+t: {
+	color:"#448c6f",
+	sound:new Howl({
+	src: ['assets/sounds/strike.mp3' ]
+	 })
+},
+v: {
+	color:"#cddb13",
+	sound:new Howl({
+	src: ['assets/sounds/wipe.mp3' ]
+	 })
+},
+w: {
+	color:"#892813",
+	sound:new Howl({
+	src: ['assets/sounds/suspension.mp3' ]
+	 })
+},
+x: {
+	color:"#1f845c",
+	sound:new Howl({
+	src: ['assets/sounds/timer.mp3' ]
+	 })
+},
+u: {
+	color:"#1f845c",
+	sound:new Howl({
+	src: ['assets/sounds/zig-zag.mp3' ]
+	 })
+},
+y: {
+	color:"#892813",
+	sound:new Howl({
+	src: ['assets/sounds/ufo.mp3' ]
+	 })
+},
+z: {
+	color:"#e20619",
+	sound:new Howl({
+	src: ['assets/sounds/veil.mp3' ]
+	 })
+}
+}
+
+var circles = [];
+function onKeyDown(event) {
+	if (keyData[event.key]) {
+		var maxPoint = new Point(view.size.width,view.size.height);
+		var randomPoint = Point.random();
+		var point = maxPoint * randomPoint;
+		var newCircle = new Path.Circle(point,500);
+		newCircle.fillColor = keyData[event.key].color;
+		keyData[event.key].sound.play();
+		circles.push(newCircle);
+	}
+}
+
+
+function onFrame(event) {
+	for (var i = 0; i < circles.length; i++) {
+		circles[i].fillColor.hue += 0.9;
+		circles[i].scale(.9);
+		if(circles[i].area < 1){
+      circles[i].remove(); // remove the circle from the canvas
+      circles.splice(i, 1); // remove the circle from the array
+      console.log(circles);
+  		}
+		}
+	}
+
 </script>
-<link rel="stylesheet" href="assets/css/app.css">
+	<link rel="stylesheet" href="assets/css/app.css">
 </head>
+
 <body>
 
 	<canvas id="myCanvas" resize></canvas>
 </body>
+
 </html>
